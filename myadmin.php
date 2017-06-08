@@ -15,10 +15,10 @@ return [
 	'version' => '1.0.0',
 	'type' => 'licenses',
 	'hooks' => [
-		'function.requirements' => ['Detain\MyAdminLxc\Plugin', 'Requirements'],
+		/*'function.requirements' => ['Detain\MyAdminLxc\Plugin', 'Requirements'],
 		'licenses.settings' => ['Detain\MyAdminLxc\Plugin', 'Settings'],
 		'licenses.activate' => ['Detain\MyAdminLxc\Plugin', 'Activate'],
 		'licenses.change_ip' => ['Detain\MyAdminLxc\Plugin', 'ChangeIp'],
-		'ui.menu' => ['Detain\MyAdminLxc\Plugin', 'Menu']
+		'ui.menu' => ['Detain\MyAdminLxc\Plugin', 'Menu'] */
 	],
 ];
