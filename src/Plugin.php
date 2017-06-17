@@ -88,7 +88,7 @@ class Plugin {
 		$settings = $event->getSubject();
 		$settings->add_text_setting($module, 'Slice Costs', 'vps_slice_lxc_cost', 'LXC VPS Cost Per Slice:', 'LXC VPS will cost this much for 1 slice.', $settings->get_setting('VPS_SLICE_LXC_COST'));
 		//$settings->add_select_master($module, 'Default Servers', $module, 'new_vps_lxc_server', 'LXC NJ Server', NEW_VPS_LXC_SERVER, 9, 1);
-		$settings->add_dropdown_setting($module, 'Out of Stock', 'outofstock_lxc', 'Out Of Stock LXC Secaucus', 'Enable/Disable Sales Of This Type', $settings->get_setting('OUTOFSTOCK_LXC'), array('0', '1'), array('No', 'Yes', ));
+		$settings->add_dropdown_setting($module, 'Out of Stock', 'outofstock_lxc', 'Out Of Stock LXC Secaucus', 'Enable/Disable Sales Of This Type', $settings->get_setting('OUTOFSTOCK_LXC'), array('0', '1'), array('No', 'Yes',));
 	}
 
 }
