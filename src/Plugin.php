@@ -7,9 +7,9 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 
 class Plugin {
 
-	public static $name = 'Lxc Vps';
-	public static $description = 'Allows selling of Lxc Server and VPS License Types.  More info at https://www.netenberg.com/lxc.php';
-	public static $help = 'It provides more than one million end users the ability to quickly install dozens of the leading open source content management systems into their web space.  	Must have a pre-existing cPanel license with cPanelDirect to purchase a lxc license. Allow 10 minutes for activation.';
+	public static $name = 'LXC VPS';
+	public static $description = 'Allows selling of LXC VPS Types.  LXC (Linux Containers) is an operating-system-level virtualization method for running multiple isolated Linux systems (containers) on a control host using a single Linux kernel.  More info at https://linuxcontainers.org/';
+	public static $help = '';
 	public static $module = 'vps';
 	public static $type = 'service';
 
@@ -20,21 +20,30 @@ class Plugin {
 	public static function getHooks() {
 		return [
 			self::$module.'.settings' => [__CLASS__, 'getSettings'],
+			self::$module.'.deactivate' => [__CLASS__, 'getDeactivate'],
 		];
 	}
 
 	public static function getActivate(GenericEvent $event) {
 		$serviceClass = $event->getSubject();
-		if ($event['category'] == SERVICE_TYPES_FANTASTICO) {
-			myadmin_log(self::$module, 'info', 'Lxc Activation', __LINE__, __FILE__);
+		if ($event['category'] == SERVICE_TYPES_LXC) {
+			myadmin_log(self::$module, 'info', self::$name.' Activation', __LINE__, __FILE__);
 			function_requirements('activate_lxc');
 			activate_lxc($serviceClass->getIp(), $event['field1']);
 			$event->stopPropagation();
 		}
 	}
 
+	public static function getDeactivate(GenericEvent $event) {
+		if ($event['category'] == SERVICE_TYPES_LXC) {
+			myadmin_log(self::$module, 'info', self::$name.' Deactivation', __LINE__, __FILE__);
+			$serviceClass = $event->getSubject();
+			$GLOBALS['tf']->history->add(self::$module.'queue', $serviceClass->getId(), 'delete', '', $serviceClass->getCustid());
+		}
+	}
+
 	public static function getChangeIp(GenericEvent $event) {
-		if ($event['category'] == SERVICE_TYPES_FANTASTICO) {
+		if ($event['category'] == SERVICE_TYPES_LXC) {
 			$serviceClass = $event->getSubject();
 			$settings = get_module_settings(self::$module);
 			$lxc = new Lxc(FANTASTICO_USERNAME, FANTASTICO_PASSWORD);
