@@ -65,7 +65,7 @@ class Plugin {
 			$serviceClass = $event->getSubject();
 			$settings = get_module_settings(self::$module);
 			$lxc = new Lxc(FANTASTICO_USERNAME, FANTASTICO_PASSWORD);
-			myadmin_log(self::$module, 'info', "IP Change - (OLD:".$serviceClass->getIp().") (NEW:{$event['newip']})", __LINE__, __FILE__);
+			myadmin_log(self::$module, 'info', 'IP Change - (OLD:' .$serviceClass->getIp().") (NEW:{$event['newip']})", __LINE__, __FILE__);
 			$result = $lxc->editIp($serviceClass->getIp(), $event['newip']);
 			if (isset($result['faultcode'])) {
 				myadmin_log(self::$module, 'error', 'Lxc editIp('.$serviceClass->getIp().', '.$event['newip'].') returned Fault '.$result['faultcode'].': '.$result['fault'], __LINE__, __FILE__);
