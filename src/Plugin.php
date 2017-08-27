@@ -89,7 +89,7 @@ class Plugin {
 		if ($GLOBALS['tf']->ima == 'admin') {
 			$menu->add_link(self::$module, 'choice=none.reusable_lxc', 'images/icons/database_warning_48.png', 'ReUsable Lxc Licenses');
 			$menu->add_link(self::$module, 'choice=none.lxc_list', 'images/icons/database_warning_48.png', 'Lxc Licenses Breakdown');
-			$menu->add_link(self::$module.'api', 'choice=none.lxc_licenses_list', 'whm/createacct.gif', 'List all Lxc Licenses');
+			$menu->add_link(self::$module.'api', 'choice=none.lxc_licenses_list', '/images/whm/createacct.gif', 'List all Lxc Licenses');
 		}
 	}
 
