@@ -1,3 +1,3 @@
-									echo "export PATH=\"\$PATH:/usr/sbin:/sbin:/bin:/usr/bin:\";\n";
-									echo 'lxc-stop -W -k -n '.($vps['vps_vzid'] == 0 ? 'vps'.$vps['vps_id'] : $vps['vps_vzid']) . ";\n";
-									echo 'lxc-destroy -f -n '.($vps['vps_vzid'] == 0 ? 'vps'.$vps['vps_id'] : $vps['vps_vzid']) . ";\n";
+export PATH="$PATH:/usr/sbin:/sbin:/bin:/usr/bin:";
+lxc-stop -W -k -n {if $vps_vzid == 0}vps{$vps_id}{else}{$vps_vzid}{/if};
+lxc-destroy -f -n {if $vps_vzid == 0}vps{$vps_id}{else}{$vps_vzid}{/if};
