@@ -139,13 +139,14 @@ class Plugin {
 	public static function getQueueBackup(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Backup', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/backup.sh.tpl');
@@ -159,13 +160,14 @@ class Plugin {
 	public static function getQueueRestore(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Restore', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/restore.sh.tpl');
@@ -179,13 +181,14 @@ class Plugin {
 	public static function getQueueEnable(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Enable', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/enable.sh.tpl');
@@ -199,13 +202,14 @@ class Plugin {
 	public static function getQueueDestroy(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Destroy', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/destroy.sh.tpl');
@@ -219,13 +223,14 @@ class Plugin {
 	public static function getQueueDelete(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Delete', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/delete.sh.tpl');
@@ -239,13 +244,14 @@ class Plugin {
 	public static function getQueueReinstallOsupdateHdsize(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Reinstall Osupdate Hdsize', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/reinstall_osupdate_hdsize.sh.tpl');
@@ -259,13 +265,14 @@ class Plugin {
 	public static function getQueueEnableCd(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Enable Cd', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/enable_cd.sh.tpl');
@@ -279,13 +286,14 @@ class Plugin {
 	public static function getQueueDisableCd(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Disable Cd', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/disable_cd.sh.tpl');
@@ -299,13 +307,14 @@ class Plugin {
 	public static function getQueueInsertCd(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Insert Cd', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/insert_cd.sh.tpl');
@@ -319,13 +328,14 @@ class Plugin {
 	public static function getQueueEjectCd(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Eject Cd', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/eject_cd.sh.tpl');
@@ -339,13 +349,14 @@ class Plugin {
 	public static function getQueueStart(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Start', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/start.sh.tpl');
@@ -359,13 +370,14 @@ class Plugin {
 	public static function getQueueStop(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Stop', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/stop.sh.tpl');
@@ -379,13 +391,14 @@ class Plugin {
 	public static function getQueueRestart(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Restart', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/restart.sh.tpl');
@@ -399,13 +412,14 @@ class Plugin {
 	public static function getQueueSetupVnc(GenericEvent $event) {
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			myadmin_log(self::$module, 'info', self::$name.' Queue Setup Vnc', __LINE__, __FILE__);
-			$serviceClass = $event->getSubject();
+			$vps = $event->getSubject();
+			$server_info = $vps['server_info'];
 			$smarty = new \TFSmarty();
 			$smarty->assign([
-				'vps_id' => $serviceClass->getId(),
-				'vps_vzid' => is_numeric($serviceClass->getVzid()) ? (in_array($event['type'], [get_service_define('KVM_WINDOWS'), get_service_define('CLOUD_KVM_WINDOWS')]) ? 'windows'.$serviceClass->getVzid() : 'linux'.$serviceClass->getVzid()) : $serviceClass->getVzid(),
-				'email' => $GLOBALS['tf']->accounts->cross_reference($serviceClass->getCustid()),
-				'domain' => DOMAIN,
+				'vps_id' => $vps['vps_id'],
+				'vps_vzid' => $vps['vps_vzid'],
+				'email' => $GLOBALS['tf']->accounts->cross_reference($vps['vps_custid']),
+				'domain' => $event['domain'],
 				'param1' => $event['param1']
 			]);
 			echo $smarty->fetch(__DIR__.'/../templates/setup_vnc.sh.tpl');
