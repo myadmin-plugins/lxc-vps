@@ -61,37 +61,6 @@ class Plugin {
 	/**
 	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
 	 */
-	public static function getMenu(GenericEvent $event) {
-		$menu = $event->getSubject();
-		if ($GLOBALS['tf']->ima == 'admin') {
-			$menu->add_link(self::$module, 'choice=none.reusable_lxc', 'images/icons/database_warning_48.png', 'ReUsable Lxc Licenses');
-			$menu->add_link(self::$module, 'choice=none.lxc_list', 'images/icons/database_warning_48.png', 'Lxc Licenses Breakdown');
-			$menu->add_link(self::$module.'api', 'choice=none.lxc_licenses_list', '/images/whm/createacct.gif', 'List all Lxc Licenses');
-		}
-	}
-
-	/**
-	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
-	 */
-	public static function getRequirements(GenericEvent $event) {
-		$loader = $event->getSubject();
-		$loader->add_page_requirement('crud_lxc_list', '/../vendor/detain/crud/src/crud/crud_lxc_list.php');
-		$loader->add_page_requirement('crud_reusable_lxc', '/../vendor/detain/crud/src/crud/crud_reusable_lxc.php');
-		$loader->add_requirement('get_lxc_licenses', '/../vendor/detain/myadmin-lxc-vps/src/lxc.inc.php');
-		$loader->add_requirement('get_lxc_list', '/../vendor/detain/myadmin-lxc-vps/src/lxc.inc.php');
-		$loader->add_page_requirement('lxc_licenses_list', '/../vendor/detain/myadmin-lxc-vps/src/lxc_licenses_list.php');
-		$loader->add_page_requirement('lxc_list', '/../vendor/detain/myadmin-lxc-vps/src/lxc_list.php');
-		$loader->add_requirement('get_available_lxc', '/../vendor/detain/myadmin-lxc-vps/src/lxc.inc.php');
-		$loader->add_requirement('activate_lxc', '/../vendor/detain/myadmin-lxc-vps/src/lxc.inc.php');
-		$loader->add_requirement('get_reusable_lxc', '/../vendor/detain/myadmin-lxc-vps/src/lxc.inc.php');
-		$loader->add_page_requirement('reusable_lxc', '/../vendor/detain/myadmin-lxc-vps/src/reusable_lxc.php');
-		$loader->add_requirement('class.Lxc', '/../vendor/detain/lxc-vps/src/Lxc.php');
-		$loader->add_page_requirement('vps_add_lxc', '/vps/addons/vps_add_lxc.php');
-	}
-
-	/**
-	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
-	 */
 	public static function getSettings(GenericEvent $event) {
 		$settings = $event->getSubject();
 		$settings->add_text_setting(self::$module, 'Slice Costs', 'vps_slice_lxc_cost', 'LXC VPS Cost Per Slice:', 'LXC VPS will cost this much for 1 slice.', $settings->get_setting('VPS_SLICE_LXC_COST'));
