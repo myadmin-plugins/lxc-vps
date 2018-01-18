@@ -24,5 +24,5 @@ composer require detain/myadmin-lxc-vps
 
 ## License
 
-The Lxc Vps Class class is licensed under the LGPL-v2 license.
+The Lxc Vps Class class is licensed under the LGPL-v2.1 license.
 
