@@ -82,8 +82,8 @@ class Plugin {
 				$smarty = new \TFSmarty();
 				$smarty->assign($vps);
 				echo $smarty->fetch(__DIR__.'/../templates/'.$vps['action'].'.sh.tpl');
-				$event->stopPropagation();
 			}
+			$event->stopPropagation();
 		}
 	}
 
