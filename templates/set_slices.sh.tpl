@@ -15,6 +15,6 @@ lxc stop {$vps_vzid};
 lxc config set {$vps_vzid} limits.memory {$memory}MB;
 lxc config set {$vps_vzid} limits.cpu {$vcpu};
 lxc config set {$vps_vzid} 
-zfs set readonly=off quota=50G refquota=50G lxd/containers/{$vps_vzid}
+zfs set readonly=off quota={$diskspace}G refquota={$diskspace}G lxd/containers/{$vps_vzid}
 lxc config device set {$vps_vzid} root size {$diskspace}GB
 lxc start {$vps_vzid};
