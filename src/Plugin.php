@@ -10,8 +10,8 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  *
  * @package Detain\MyAdminLxc
  */
-class Plugin {
-
+class Plugin
+{
 	public static $name = 'LXC VPS';
 	public static $description = 'Allows selling of LXC VPS Types.  LXC (Linux Containers) is an operating-system-level virtualization method for running multiple isolated Linux systems (containers) on a control host using a single Linux kernel.  More info at https://linuxcontainers.org/';
 	public static $help = '';
@@ -21,13 +21,15 @@ class Plugin {
 	/**
 	 * Plugin constructor.
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 	}
 
 	/**
 	 * @return array
 	 */
-	public static function getHooks() {
+	public static function getHooks()
+	{
 		return [
 			self::$module.'.settings' => [__CLASS__, 'getSettings'],
 			//self::$module.'.activate' => [__CLASS__, 'getActivate'],
@@ -39,7 +41,8 @@ class Plugin {
 	/**
 	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
 	 */
-	public static function getActivate(GenericEvent $event) {
+	public static function getActivate(GenericEvent $event)
+	{
 		$serviceClass = $event->getSubject();
 		if ($event['type'] == get_service_define('LXC')) {
 			myadmin_log(self::$module, 'info', self::$name.' Activation', __LINE__, __FILE__);
@@ -50,7 +53,8 @@ class Plugin {
 	/**
 	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
 	 */
-	public static function getDeactivate(GenericEvent $event) {
+	public static function getDeactivate(GenericEvent $event)
+	{
 		if ($event['type'] == get_service_define('LXC')) {
 			myadmin_log(self::$module, 'info', self::$name.' Deactivation', __LINE__, __FILE__);
 			$serviceClass = $event->getSubject();
@@ -61,7 +65,8 @@ class Plugin {
 	/**
 	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
 	 */
-	public static function getSettings(GenericEvent $event) {
+	public static function getSettings(GenericEvent $event)
+	{
 		$settings = $event->getSubject();
 		$settings->add_text_setting(self::$module, 'Slice Costs', 'vps_slice_lxc_cost', 'LXC VPS Cost Per Slice:', 'LXC VPS will cost this much for 1 slice.', $settings->get_setting('VPS_SLICE_LXC_COST'));
 		//$settings->add_select_master(self::$module, 'Default Servers', self::$module, 'new_vps_lxc_server', 'LXC NJ Server', NEW_VPS_LXC_SERVER, 9, 1);
@@ -71,7 +76,8 @@ class Plugin {
 	/**
 	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
 	 */
-	public static function getQueue(GenericEvent $event) {
+	public static function getQueue(GenericEvent $event)
+	{
 		if (in_array($event['type'], [get_service_define('LXC')])) {
 			$vps = $event->getSubject();
 			myadmin_log(self::$module, 'info', self::$name.' Queue '.ucwords(str_replace('_', ' ', $vps['action'])).' for VPS '.$vps['vps_hostname'].'(#'.$vps['vps_id'].'/'.$vps['vps_vzid'].')', __LINE__, __FILE__);
@@ -87,21 +93,23 @@ class Plugin {
 		}
 	}
 
-	public static function GetList($name = '') {
-		$exp = explode("\n",shell_exec('lxc list '.$name));
+	public static function GetList($name = '')
+	{
+		$exp = explode("\n", shell_exec('lxc list '.$name));
 		$res = [];
-		foreach ($exp as $k => $v)
+		foreach ($exp as $k => $v) {
 			if ($k % 2 && $k!=1 && $v!='') {
-				$exp2 = explode('|',$v);
-				$exp3 = explode(' (',trim($exp2[3]));
+				$exp2 = explode('|', $v);
+				$exp3 = explode(' (', trim($exp2[3]));
 				$res[] = [
-					'name' => trim($exp2[1]), 
-					'status' => strtolower(trim($exp2[2])), 
-					'ipv4' => $exp3[0], 
-					'card' => substr($exp3[1],0,strlen($exp3[1])-1),
+					'name' => trim($exp2[1]),
+					'status' => strtolower(trim($exp2[2])),
+					'ipv4' => $exp3[0],
+					'card' => substr($exp3[1], 0, strlen($exp3[1])-1),
 					'ipv6' => trim($exp2[4])
 				];
 			}
+		}
 		return $res;
 	}
 }
