@@ -14,13 +14,21 @@
 cp -f /etc/lxc/dnsmasq.conf /etc/lxc/dnsmasq.conf.backup;
 cat /etc/lxc/dnsmasq.conf.backup |grep -v '={$vzid},' > /etc/lxc/dnsmasq.conf;
 echo 'dhcp-host={$mac},{$ip}' >> /etc/lxc/dnsmasq.conf;
-cp -f /etc/dhcp/dhcpd.vps /etc/dhcp/dhcpd.vps.backup;
-grep -v 'fixed-address {$ip};' /etc/dhcp/dhcpd.vps.backup > /etc/dhcp/dhcpd.vps;
-echo 'host {$vzid} { hardware ethernet {$mac}; fixed-address {$ip};}' >> /etc/dhcp/dhcpd.vps;
-service isc-dhcp-server restart;
-lxc launch images:{$vps_os} {$vzid} -c limits.memory={$ram}MB -c limits.cpu={$vcpu} -c volatile.eth0.hwaddr={$mac};
+killall -HUP dnsmasq
+#cp -f /etc/dhcp/dhcpd.vps /etc/dhcp/dhcpd.vps.backup;
+#grep -v 'fixed-address {$ip};' /etc/dhcp/dhcpd.vps.backup > /etc/dhcp/dhcpd.vps;
+#echo 'host {$vzid} { hardware ethernet {$mac}; fixed-address {$ip};}' >> /etc/dhcp/dhcpd.vps;
+#service isc-dhcp-server restart;
 #lxc-create -n {$vzid} -t {$distro} -- --release={$version} --arch={$bits} --password {$rootpass};
-#lxc-start -d -n {$vzid};
+#lxc launch images:{$vps_os} {$vzid} -c limits.memory={$ram}MB -c limits.cpu={$vcpu} -c volatile.eth0.hwaddr={$mac};
+lxc init images:{$vps_os} {$vzid}
+lxc config set {$vzid} limits.memory {$ram}MB;
+lxc config set {$vzid} limits.cpu {$vcpu};
+lxc config set {$vzid} volatile.eth0.hwaddr {$mac};
+lxc network attach lxdbr0 {$vzid} eth0
+lxc config device set {$vzid} eth0 ipv4.address {$ip}
 lxc config device add {$vzid} root disk path=/ pool=lxd size={$hd}GB;
+#lxc-start -d -n {$vzid};
+lxc start {$vzid}
 lxc exec {$vzid} "echo root:{$rootpass} | chpasswd";
 
