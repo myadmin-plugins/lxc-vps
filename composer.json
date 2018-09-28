@@ -1,5 +1,5 @@
 {
-	"name": "detain/myadmin-lxc-vps",
+	"name": "detain/lxc-vps",
 	"type": "myadmin-plugin",
 	"description": "Lxc Vps Class",
 	"keywords": [
