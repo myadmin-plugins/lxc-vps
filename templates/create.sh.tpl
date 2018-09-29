@@ -6,7 +6,7 @@
 {assign var=vcpu value=ceil($vps_slices / 4)}
 {/if}
 cp -f /etc/lxc/dnsmasq.conf /etc/lxc/dnsmasq.conf.backup;
-cat /etc/lxc/dnsmasq.conf.backup |grep -v -e '={$mac},' -e '={$vzid},' > /etc/lxc/dnsmasq.conf;
+cat /etc/lxc/dnsmasq.conf.backup |grep -v -e ',{$ip}$' -e '={$mac},' -e '={$vzid},' > /etc/lxc/dnsmasq.conf;
 echo 'dhcp-host={$mac},{$ip}' >> /etc/lxc/dnsmasq.conf;
 killall -HUP dnsmasq
 lxc init images:{$vps_os} {$vzid}
