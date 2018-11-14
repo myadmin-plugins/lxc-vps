@@ -65,12 +65,15 @@ class Plugin
 	/**
 	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
 	 */
-	public static function getSettings(GenericEvent $event)
-	{
-		$settings = $event->getSubject();
-		$settings->add_text_setting(self::$module, 'Slice Costs', 'vps_slice_lxc_cost', 'LXC VPS Cost Per Slice:', 'LXC VPS will cost this much for 1 slice.', $settings->get_setting('VPS_SLICE_LXC_COST'));
-		//$settings->add_select_master(self::$module, 'Default Servers', self::$module, 'new_vps_lxc_server', 'LXC NJ Server', NEW_VPS_LXC_SERVER, 9, 1);
-		$settings->add_dropdown_setting(self::$module, 'Out of Stock', 'outofstock_lxc', 'Out Of Stock LXC Secaucus', 'Enable/Disable Sales Of This Type', $settings->get_setting('OUTOFSTOCK_LXC'), ['0', '1'], ['No', 'Yes']);
+    public static function getSettings(GenericEvent $event)
+    {
+        /**
+         * @var \MyAdmin\Settings $settings
+         **/
+        $settings = $event->getSubject();
+		$settings->add_text_setting(self::$module, __('Slice Costs'), 'vps_slice_lxc_cost', __('LXC VPS Cost Per Slice'), __('LXC VPS will cost this much for 1 slice.'), $settings->get_setting('VPS_SLICE_LXC_COST'));
+		//$settings->add_select_master(__(self::$module), __('Default Servers'), self::$module, 'new_vps_lxc_server', __('LXC NJ Server'), NEW_VPS_LXC_SERVER, 9, 1);
+		$settings->add_dropdown_setting(self::$module, __('Out of Stock'), 'outofstock_lxc', __('Out Of Stock LXC Secaucus'), __('Enable/Disable Sales Of This Type'), $settings->get_setting('OUTOFSTOCK_LXC'), ['0', '1'], ['No', 'Yes']);
 	}
 
 	/**
