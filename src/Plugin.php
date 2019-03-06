@@ -45,7 +45,7 @@ class Plugin
 	{
 		$serviceClass = $event->getSubject();
 		if ($event['type'] == get_service_define('LXC')) {
-			myadmin_log(self::$module, 'info', self::$name.' Activation', __LINE__, __FILE__);
+			myadmin_log(self::$module, 'info', self::$name.' Activation', __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$event->stopPropagation();
 		}
 	}
