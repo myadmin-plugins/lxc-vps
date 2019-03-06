@@ -56,8 +56,8 @@ class Plugin
     public static function getDeactivate(GenericEvent $event)
     {
         if ($event['type'] == get_service_define('LXC')) {
-            myadmin_log(self::$module, 'info', self::$name.' Deactivation', __LINE__, __FILE__);
             $serviceClass = $event->getSubject();
+            myadmin_log(self::$module, 'info', self::$name.' Deactivation', __LINE__, __FILE__, self::$module, $serviceClass->getId());
             $GLOBALS['tf']->history->add(self::$module.'queue', $serviceClass->getId(), 'delete', '', $serviceClass->getCustid());
         }
     }
@@ -83,10 +83,11 @@ class Plugin
     {
         if (in_array($event['type'], [get_service_define('LXC')])) {
             $serviceInfo = $event->getSubject();
-            myadmin_log(self::$module, 'info', self::$name.' Queue '.ucwords(str_replace('_', ' ', $serviceInfo['action'])).' for VPS '.$serviceInfo['vps_hostname'].'(#'.$serviceInfo['vps_id'].'/'.$serviceInfo['vps_vzid'].')', __LINE__, __FILE__);
+            $settings = get_module_settings(self::$module);
+            myadmin_log(self::$module, 'info', self::$name.' Queue '.ucwords(str_replace('_', ' ', $serviceInfo['action'])).' for VPS '.$serviceInfo['vps_hostname'].'(#'.$serviceInfo['vps_id'].'/'.$serviceInfo['vps_vzid'].')', __LINE__, __FILE__, self::$module, $serviceInfo[$settings['PREFIX'].'_id']);
             $server_info = $serviceInfo['server_info'];
             if (!file_exists(__DIR__.'/../templates/'.$serviceInfo['action'].'.sh.tpl')) {
-                myadmin_log(self::$module, 'error', 'Call '.$serviceInfo['action'].' for VPS '.$serviceInfo['vps_hostname'].'(#'.$serviceInfo['vps_id'].'/'.$serviceInfo['vps_vzid'].') Does not Exist for '.self::$name, __LINE__, __FILE__, self::$module);
+                myadmin_log(self::$module, 'error', 'Call '.$serviceInfo['action'].' for VPS '.$serviceInfo['vps_hostname'].'(#'.$serviceInfo['vps_id'].'/'.$serviceInfo['vps_vzid'].') Does not Exist for '.self::$name, __LINE__, __FILE__, self::$module, $serviceInfo[$settings['PREFIX'].'_id']);
             } else {
                 $smarty = new \TFSmarty();
                 $smarty->assign($serviceInfo);
