@@ -1,4 +1,25 @@
-# Lxc Vps Class
+# LXD / LXC Virtualization Plugn for MyAdmin VPS Hosting
+
+
+## Links
+
+[502 Proxy Error](https://linuxcontainers.org/lxd/try-it/)
+[502 Proxy Error](https://linuxcontainers.org/lxd/introduction/)
+[502 Proxy Error](https://discuss.linuxcontainers.org/t/using-static-ips-with-lxd/1291)
+[502 Proxy Error](https://www.stgraber.org/2016/03/11/lxd-2-0-blog-post-series-012/)
+[502 Proxy Error](https://discuss.linuxcontainers.org/t/access-lxc-container-using-vnc/2457)
+[502 Proxy Error](https://www.stgraber.org/2016/10/27/network-management-with-lxd-2-3/)
+[LXD, ZFS and bridged networking on Ubuntu 16.04 LTS+ | Jason Bayton](https://bayton.org/docs/linux/lxd/lxd-zfs-and-bridged-networking-on-ubuntu-16-04-lts/)
+[Ubuntu 18.04 LXD/LXC, ZFS, Docker, and Advanced Networking | Homelab City](https://homelab.city/ubuntu-18-04-lxd-zfs-docker-and-networking/)
+[LXD](https://help.ubuntu.com/lts/serverguide/lxd.html)
+[lxd/index.md at master · lxc/lxd](https://github.com/lxc/lxd/blob/master/doc/index.md)
+[Frequently Asked Questions - LXD - system container manager](https://lxd.readthedocs.io/en/latest/faq/)
+[LXD Containers — Odoo Development master documentation](https://odoo-development.readthedocs.io/en/latest/remote-dev/lxd/lxd.html)
+[Howto easily set static IP for all my containers ? · Issue #2780 · lxc/lxd](https://github.com/lxc/lxd/issues/2780)
+[bash - LXD - How to execute a script inside a container from host - Ask Ubuntu](https://askubuntu.com/questions/1052643/lxd-how-to-execute-a-script-inside-a-container-from-host)
+[xorg - ubuntu-desktop in lxc with ubuntu server as the host - Ask Ubuntu](https://askubuntu.com/questions/1058180/ubuntu-desktop-in-lxc-with-ubuntu-server-as-the-host)
+[Ubuntu 18.04 RDP | FinalX](https://finalx.nl/en/articles/ubuntu-rdp)
+
 
 Lxc Vps Class
 
