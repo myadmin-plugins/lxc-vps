@@ -17,5 +17,15 @@ lxc network attach br0 {$vzid} eth0
 lxc config device set {$vzid} eth0 ipv4.address {$ip}
 lxc config device set {$vzid} eth0 security.mac_filtering true
 lxc config device add {$vzid} root disk path=/ pool=lxd size={$hd}GB;
-lxc start {$vzid}
-lxc exec {$vzid} "echo root:{$rootpass} | chpasswd";
+lxc start {$vzid} || lxc info --show-log {$vzid}
+lxc exec {$vzid} -- bash -c 'x=0; while [ 0 ]; do x=$(($x + 1)); ping -c 2 4.2.2.2; if [ $? -eq 0 ] || [ "$x" = "20" ]; then break; else sleep 1s; fi; done'
+lxc exec {$vzid} -- bash -c "echo ALL: ALL >> /etc/hosts.allow;"
+lxc exec {$vzid} -- bash -c "if [ -e /etc/apt ]; then apt update; apt install openssh-server -y; fi;"
+lxc exec {$vzid} -- bash -c "if [ -e /etc/yum ]; then yum install openssh-server -y; fi;"
+lxc exec {$vzid} -- sed s#"^\#*PermitRootLogin .*$"#"PermitRootLogin yes"#g -i /etc/ssh/sshd_config;
+lxc exec {$vzid} -- bash -c "echo root:{$rootpass} | chpasswd"
+lxc exec {$vzid} -- /etc/init.d/ssh restart;
+lxc exec {$vzid} -- /etc/init.d/sshd restart;
+lxc exec {$vzid} -- systemctl restart sshd;
+lxc exec {$vzid} -- locale-gen --purge en_US.UTF-8
+lxc exec {$vzid} -- bash -c "echo -e 'LANG=\"en_US.UTF-8\"\nLANGUAGE=\"en_US:en\"\n' > /etc/default/locale"
