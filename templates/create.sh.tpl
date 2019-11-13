@@ -10,7 +10,11 @@ cat /etc/lxc/dnsmasq.conf.backup |grep -v -e ',{$ip}$' -e '={$mac},' -e '={$vzid
 echo 'dhcp-host={$mac},{$ip}' >> /etc/lxc/dnsmasq.conf;
 cat /etc/lxc/dnsmasq.conf  > /var/snap/lxd/common/lxd/networks/*/dnsmasq.raw;
 killall -HUP dnsmasq
-lxc init images:{$vps_os} {$vzid}
+if [ "{$vps_os}" = "wordpress" ]; then
+  lxc init {$vps_os} {$vzid}
+else
+  lxc init images:{$vps_os} {$vzid}
+fi
 lxc config set {$vzid} limits.memory {$ram}MB;
 lxc config set {$vzid} limits.cpu {$vcpu};
 lxc config set {$vzid} volatile.eth0.hwaddr {$mac};
