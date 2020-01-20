@@ -25,10 +25,10 @@ lxc config device add {$vzid} root disk path=/ pool=lxd size={$hd}GB;
 lxc start {$vzid} || lxc info --show-log {$vzid}
 lxc exec {$vzid} -- bash -l -c 'x=0; while [ 0 ]; do x=$(($x + 1)); ping -c 2 4.2.2.2; if [ $? -eq 0 ] || [ "$x" = "20" ]; then break; else sleep 1s; fi; done'
 lxc exec {$vzid} -- bash -l -c "echo ALL: ALL >> /etc/hosts.allow;"
-lxc exec {$vzid} -- bash -l -c "if [ -e /etc/apt ]; then apt-get update; apt-get install openssh-server -y; fi;"
+lxc exec {$vzid} -- bash -l -c 'if [ -e /etc/apt ]; then e=0; apt-get update; while [ $e -eq 0 ]; do apt-get install openssh-server -y && e=1 || sleep 30s; done; fi;'
 lxc exec {$vzid} -- bash -l -c "if [ -e /etc/yum ]; then yum install openssh-server -y; fi;"
 lxc exec {$vzid} -- bash -l -c 'sed s#"^\#*PermitRootLogin .*$"#"PermitRootLogin yes"#g -i /etc/ssh/sshd_config';
 lxc exec {$vzid} -- bash -l -c "echo root:{$rootpass} | chpasswd"
-lxc exec {$vzid} -- bash -l -c "/etc/init.d/ssh restart; /etc/init.d/sshd restart; systemctl restart sshd;"
+lxc exec {$vzid} -- bash -l -c "/etc/init.d/ssh restart || /etc/init.d/sshd restart; systemctl restart sshd;"
 lxc exec {$vzid} -- bash -l -c "locale-gen --purge en_US.UTF-8"
 lxc exec {$vzid} -- bash -l -c "echo -e 'LANG=\"en_US.UTF-8\"\nLANGUAGE=\"en_US:en\"\n' > /etc/default/locale"
