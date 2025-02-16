@@ -71,9 +71,11 @@ class Plugin
          * @var \MyAdmin\Settings $settings
          **/
         $settings = $event->getSubject();
+        $settings->setTarget('module');
         $settings->add_text_setting(self::$module, _('Slice Costs'), 'vps_slice_lxc_cost', _('LXC VPS Cost Per Slice'), _('LXC VPS will cost this much for 1 slice.'), $settings->get_setting('VPS_SLICE_LXC_COST'));
         //$settings->add_select_master(_(self::$module), _('Default Servers'), self::$module, 'new_vps_lxc_server', _('LXC NJ Server'), NEW_VPS_LXC_SERVER, 9, 1);
         $settings->add_dropdown_setting(self::$module, _('Out of Stock'), 'outofstock_lxc', _('Out Of Stock LXC Secaucus'), _('Enable/Disable Sales Of This Type'), $settings->get_setting('OUTOFSTOCK_LXC'), ['0', '1'], ['No', 'Yes']);
+        $settings->setTarget('global');
     }
 
     /**
