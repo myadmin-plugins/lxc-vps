@@ -1,21 +1,25 @@
 {
 	"name": "detain/myadmin-lxc-vps",
 	"type": "myadmin-plugin",
-	"description": "Lxc Vps Class",
+	"description": "MyAdmin LXC VPS plugin — provides LXC (Linux Containers) virtual private server provisioning, management, and billing integration for the MyAdmin control panel.",
 	"keywords": [
 		"lxc",
+		"vps",
+		"containers",
+		"virtualization",
+		"myadmin",
 		"administration",
-		"license"
+		"hosting"
 	],
 	"license": "LGPL-2.1-only",
 	"authors": [
 		{
 			"name": "Joe Huss",
-			"homepage": "https:\/\/my.interserver.net\/"
+			"homepage": "https://my.interserver.net/"
 		}
 	],
 	"config": {
-		"bin-dir": "vendor\/bin",
+		"bin-dir": "vendor/bin",
 		"minimum-stability": "dev"
 	},
 	"require": {
@@ -23,18 +27,18 @@
 		"ext-soap": "*",
 		"symfony/event-dispatcher": "^5.0@stable",
 		"detain/myadmin-plugin-installer": "dev-master"
-    },
+	},
 	"require-dev": {
-		"phpunit/phpunit": "*",
-		"phpunit/phpunit-mock-objects": "*",
-		"vlucas/phpdotenv": "*",
-		"codeclimate/php-test-reporter": "dev-master",
-		"satooshi/php-coveralls": "*",
-		"codacy/coverage": "dev-master"
+		"phpunit/phpunit": "^9.6"
 	},
 	"autoload": {
 		"psr-4": {
 			"Detain\\MyAdminLxc\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Detain\\MyAdminLxc\\Tests\\": "tests/"
 		}
 	}
 }
