@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Detain\MyAdminLxc\Tests;
 
 use Detain\MyAdminLxc\Plugin;
+use Detain\MyAdminLxc\Tests\Support\FrameworkSpy;
+use MyAdmin\App;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
@@ -479,20 +482,183 @@ class PluginTest extends TestCase
         self::assertCount(3, $hooks);
     }
 
+    // ---------------------------------------------------------------
+    // Hook dispatch tests
+    //
+    // These three replace an assertion that listed the exact set of public static
+    // method names on the class. That assertion had no behavioural meaning, broke
+    // as soon as a method was legitimately added, and could not even do what its
+    // name claimed: ReflectionClass::getMethods() treats its filter mask as a
+    // union, so IS_PUBLIC|IS_STATIC also matched the public non-static
+    // constructor. What actually matters is that every callback getHooks()
+    // advertises survives being registered on a real dispatcher and invoked - so
+    // each hook is now dispatched for real and asserted on by its effect.
+    // ---------------------------------------------------------------
+
     /**
-     * Verify the class has exactly the expected set of public static methods.
+     * Register every advertised hook on a real dispatcher, the way MyAdmin does.
      */
-    public function testExpectedPublicStaticMethods(): void
+    private function dispatcherWithPluginHooks(): EventDispatcher
     {
-        $expected = ['getHooks', 'getActivate', 'getDeactivate', 'getSettings', 'getQueue', 'GetList'];
-        $actual = [];
-        foreach ($this->reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_STATIC) as $m) {
-            if ($m->getDeclaringClass()->getName() === Plugin::class) {
-                $actual[] = $m->getName();
-            }
+        $dispatcher = new EventDispatcher();
+        $hooks = Plugin::getHooks();
+        self::assertNotEmpty($hooks, 'The plugin must advertise at least one hook');
+        foreach ($hooks as $hookName => $callback) {
+            self::assertIsCallable($callback, "Hook {$hookName} is registered but is not callable");
+            $dispatcher->addListener($hookName, $callback);
         }
-        sort($expected);
-        sort($actual);
-        self::assertSame($expected, $actual);
+        return $dispatcher;
+    }
+
+    /**
+     * Dispatching vps.settings registers the LXC cost and out-of-stock settings
+     * against the vps module, and hands the settings object back on the 'global'
+     * target - leaving it on 'module' would misfile every setting registered after
+     * this plugin.
+     */
+    public function testSettingsHookRegistersLxcSettingsAndRestoresGlobalTarget(): void
+    {
+        $settings = new class () {
+            /** @var array<int, string> */
+            public $targets = [];
+
+            /** @var array<string, array<int, mixed>> */
+            public $registered = [];
+
+            public function setTarget($target)
+            {
+                $this->targets[] = $target;
+            }
+
+            public function get_setting($name)
+            {
+                return 'current:' . $name;
+            }
+
+            public function add_text_setting(...$args)
+            {
+                $this->registered[$args[2]] = $args;
+            }
+
+            public function add_dropdown_setting(...$args)
+            {
+                $this->registered[$args[2]] = $args;
+            }
+        };
+
+        $this->dispatcherWithPluginHooks()->dispatch(new GenericEvent($settings), 'vps.settings');
+
+        self::assertArrayHasKey('vps_slice_lxc_cost', $settings->registered);
+        self::assertArrayHasKey('outofstock_lxc', $settings->registered);
+        self::assertSame('vps', $settings->registered['vps_slice_lxc_cost'][0]);
+        self::assertSame('current:VPS_SLICE_LXC_COST', $settings->registered['vps_slice_lxc_cost'][5]);
+        self::assertSame(['0', '1'], $settings->registered['outofstock_lxc'][6]);
+        self::assertSame(['module', 'global'], $settings->targets);
+    }
+
+    /**
+     * Dispatching vps.deactivate queues a container delete for LXC services and
+     * does nothing at all for any other VPS type.
+     */
+    public function testDeactivateHookQueuesDeleteForLxcServicesOnly(): void
+    {
+        $service = new class () {
+            public function getId()
+            {
+                return 501;
+            }
+
+            public function getCustid()
+            {
+                return 9001;
+            }
+        };
+        $dispatcher = $this->dispatcherWithPluginHooks();
+
+        FrameworkSpy::reset();
+        $dispatcher->dispatch(new GenericEvent($service, ['type' => 99]), 'vps.deactivate');
+        self::assertSame([], FrameworkSpy::$history, 'A non-LXC VPS must not be queued for LXC deletion');
+
+        FrameworkSpy::reset();
+        $dispatcher->dispatch(new GenericEvent($service, ['type' => App::LXC_SERVICE_TYPE]), 'vps.deactivate');
+        self::assertSame([['vpsqueue', 501, 'delete', '', 9001]], FrameworkSpy::$history);
+    }
+
+    /**
+     * Dispatching vps.queue for an LXC service renders the template matching the
+     * requested action, appends it to whatever output earlier handlers produced,
+     * and stops propagation so no other VPS plugin also answers the action.
+     */
+    public function testQueueHookAppendsRenderedTemplateForLxcServices(): void
+    {
+        FrameworkSpy::reset();
+        $event = new GenericEvent(
+            $this->queueSubject('start'),
+            ['type' => App::LXC_SERVICE_TYPE, 'output' => "# earlier output\n"]
+        );
+
+        $this->dispatcherWithPluginHooks()->dispatch($event, 'vps.queue');
+
+        self::assertStringStartsWith("# earlier output\n", $event['output'], 'Output must be appended, not replaced');
+        self::assertStringContainsString('#rendered:start.sh.tpl:lxc-host', $event['output']);
+        self::assertCount(1, FrameworkSpy::$renderedTemplates);
+        self::assertStringEndsWith('/templates/start.sh.tpl', FrameworkSpy::$renderedTemplates[0]);
+        self::assertTrue($event->isPropagationStopped());
+    }
+
+    /**
+     * An LXC action this plugin ships no template for is logged as an error and
+     * contributes nothing to the queue output, rather than rendering a missing file.
+     */
+    public function testQueueHookLogsErrorForUnknownLxcAction(): void
+    {
+        FrameworkSpy::reset();
+        $event = new GenericEvent(
+            $this->queueSubject('no_such_action'),
+            ['type' => App::LXC_SERVICE_TYPE, 'output' => 'untouched']
+        );
+
+        $this->dispatcherWithPluginHooks()->dispatch($event, 'vps.queue');
+
+        self::assertSame('untouched', $event['output']);
+        self::assertSame([], FrameworkSpy::$renderedTemplates);
+        $errors = FrameworkSpy::logsWithLevel('error');
+        self::assertCount(1, $errors);
+        self::assertStringContainsString('no_such_action', $errors[0][2]);
+        self::assertTrue($event->isPropagationStopped());
+    }
+
+    /**
+     * A queue event for some other VPS type is left entirely alone, so the plugin
+     * responsible for that type still gets to handle it.
+     */
+    public function testQueueHookIgnoresNonLxcServices(): void
+    {
+        FrameworkSpy::reset();
+        $event = new GenericEvent($this->queueSubject('start'), ['type' => 99, 'output' => 'untouched']);
+
+        $this->dispatcherWithPluginHooks()->dispatch($event, 'vps.queue');
+
+        self::assertSame('untouched', $event['output']);
+        self::assertSame([], FrameworkSpy::$renderedTemplates);
+        self::assertSame([], FrameworkSpy::$logs);
+        self::assertFalse($event->isPropagationStopped());
+    }
+
+    /**
+     * The service info array MyAdmin hands to the queue handler.
+     *
+     * @return array<string, mixed>
+     */
+    private function queueSubject(string $action): array
+    {
+        return [
+            'action' => $action,
+            'vps_id' => 501,
+            'vps_custid' => 9001,
+            'vps_hostname' => 'lxc-host',
+            'vps_vzid' => 7,
+            'server_info' => ['vps_name' => 'lxc-node-1'],
+        ];
     }
 }
