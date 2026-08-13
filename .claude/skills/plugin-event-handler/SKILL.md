@@ -1,6 +1,6 @@
 ---
 name: plugin-event-handler
-description: Adds a new static event handler method to src/Plugin.php following the GenericEvent pattern. Registers the hook in getHooks(), checks get_service_define('LXC'), logs with myadmin_log, and calls stopPropagation(). Use when user says 'add hook', 'new event handler', 'handle event', or 'register vps event'. Do NOT use for modifying getQueue() template logic or adding Smarty template rendering. NOTE: for a plugin's contract/behavioral tests (tests/ContractTest.php, the shared harness, composer myadmin:scaffold-tests) use the plugin-contract-tests skill instead — this skill's reflection-only guidance predates that harness.
+description: Adds a new static event handler method to src/Plugin.php following the GenericEvent pattern. Registers the hook in getHooks(), checks get_service_define('LXC'), logs with myadmin_log, and calls stopPropagation(). Use when user says 'add hook', 'new event handler', 'handle event', or 'register vps event'. Do NOT use for modifying getQueue() template logic or adding Smarty template rendering. For a plugin's contract or behavioral tests (tests/ContractTest.php, the shared harness, composer myadmin:scaffold-tests) use the plugin-contract-tests skill instead — this skill's reflection-only guidance predates that harness.
 ---
 <!-- myadmin-contract-harness-notice -->
 > ### ⚠️ Read this before the rest of the file

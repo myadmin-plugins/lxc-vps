@@ -1,6 +1,6 @@
 ---
 name: plugin-test
-description: Writes PHPUnit test methods in `tests/PluginTest.php` for the myadmin-lxc-vps plugin using `ReflectionClass` to assert static properties, hook structure, method signatures, and template file existence. Use when user says 'add test', 'write tests for', 'test coverage', or 'test the plugin'. Do NOT use for integration tests that require runtime functions like `myadmin_log`, `get_service_define`, or `get_module_settings`. NOTE: for a plugin's contract/behavioral tests (tests/ContractTest.php, the shared harness, composer myadmin:scaffold-tests) use the plugin-contract-tests skill instead — this skill's reflection-only guidance predates that harness.
+description: Writes PHPUnit test methods in `tests/PluginTest.php` for the myadmin-lxc-vps plugin using `ReflectionClass` to assert static properties, hook structure, method signatures, and template file existence. Use when user says 'add test', 'write tests for', 'test coverage', or 'test the plugin'. Do NOT use for integration tests that require runtime functions like `myadmin_log`, `get_service_define`, or `get_module_settings`. For a plugin's contract or behavioral tests (tests/ContractTest.php, the shared harness, composer myadmin:scaffold-tests) use the plugin-contract-tests skill instead — this skill's reflection-only guidance predates that harness.
 ---
 <!-- myadmin-contract-harness-notice -->
 > ### ⚠️ Read this before the rest of the file
